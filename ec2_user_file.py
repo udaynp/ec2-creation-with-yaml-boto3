@@ -17,7 +17,7 @@ from dateutil import parser
 region = sys.argv[1]
 SubnetId_yours=sys.argv[2]
 
-security_group="sg-07b168fd4ca2fe1e6"
+security_group="sg-xxxxxxxxx"
 
 def sprint(message):
     print ("{0} {1}".format(datetime.now().strftime('%Y-%m-%d %H:%M:%S'),str(message))) 
@@ -108,6 +108,7 @@ try:
 except yaml.YAMLError as exc:
     print(exc)
 
+#Know we should not repeat but to get user data as shell commands we are getting formatting issue
 user=users[0]["login"]
 ssh_keyname=users[0]["ssh_key"]
 
@@ -136,14 +137,22 @@ cat <<EOD >> /home/%s/.ssh/authorized_keys
 EOD
 """%(user,user,user,user,output)
 
+#looks some issues with root volume if we format temporarily commented
+#myCode = """#!/bin/bash
+#sudo mkfs.%s %s
+#sudo mkdir %s
+#echo "%s %s auto noatime 0 0" | sudo tee -a /etc/fstab
+#sudo mkfs.%s %s
+#sudo mkdir %s
+#echo "%s %s auto noatime 0 0" | sudo tee -a /etc/fstab
+#%s"""%(volume_type1,volume_image1,volume_mount1,volume_mount1,volume_type1,volume_type2,volume_image2,volume_mount2,volume_mount2,volume_type2,ssh_add)
+
 myCode = """#!/bin/bash
+
 sudo mkfs.%s %s
 sudo mkdir %s
 echo "%s %s auto noatime 0 0" | sudo tee -a /etc/fstab
-sudo mkfs.%s %s
-sudo mkdir %s
-echo "%s %s auto noatime 0 0" | sudo tee -a /etc/fstab
-%s"""%(volume_type1,volume_image1,volume_mount1,volume_mount1,volume_type1,volume_type2,volume_image2,volume_mount2,volume_mount2,volume_type2,ssh_add)
+%s"""%(volume_type2,volume_image2,volume_mount2,volume_mount2,volume_type2,ssh_add)
 
 
 print(myCode)
