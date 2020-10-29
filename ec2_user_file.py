@@ -32,7 +32,7 @@ def shell_command(query,IsShell=None):
          run_output, run_error = run_process.communicate()
          return run_process.returncode, run_output, run_error
 
-#status, output, error = shell_command(s3_to_s3_copy, True)
+#status, output, error = shell_command(command, True)
 ssh_add=""
 
 #Create user and pem key and extract the public key
@@ -56,11 +56,11 @@ def user_keypair_creation(user,ssh_keyname):
         
         ec2 = boto3.client('ec2','us-west-2')
         response = ec2.create_key_pair(KeyName=ssh_keyname)
-
+        
         with open('./'+ssh_keyname+'.pem', 'w') as file:
              file.write(response['KeyMaterial'])
              print(response)
-
+        os.chmod('./'+ssh_keyname+'.pem',stat.S_IRUSR)
         get_pub_key = 'ssh-keygen -y -f ./'+ssh_keyname+'.pem'
         status, output, error = shell_command(get_pub_key, True)
         
@@ -130,15 +130,19 @@ ssh_keyname=users[1]["ssh_key"]
 output=user_keypair_creation(user,ssh_keyname)
 
 ssh_add +="""
-mkdir -p /home/%s/.ssh/
 useradd %s
+mkdir -p /home/%s/.ssh/
+chown %s:%s /home/%s/.ssh
+chmod 700 /home/%s/.ssh
 echo "%s ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/90-cloud-init-users
 cat <<EOD >> /home/%s/.ssh/authorized_keys
 %s
 EOD
-"""%(user,user,user,user,output)
+"""%(user,user,user,user,user,user,user,user,output)
 
-#looks some issues with root volume if we format temporarily commented
+
+
+#We should not do format the root  volume if we format server will not come up temporarily commented. Updated the process in read me file
 #myCode = """#!/bin/bash
 #sudo mkfs.%s %s
 #sudo mkdir %s
@@ -149,7 +153,7 @@ EOD
 #%s"""%(volume_type1,volume_image1,volume_mount1,volume_mount1,volume_type1,volume_type2,volume_image2,volume_mount2,volume_mount2,volume_type2,ssh_add)
 
 myCode = """#!/bin/bash
-
+sudo yum -y install xfsprogs
 sudo mkfs.%s %s
 sudo mkdir %s
 echo "%s %s auto noatime 0 0" | sudo tee -a /etc/fstab
