@@ -1,9 +1,9 @@
 # ec2-creation-with-yaml-boto3
 
-run python ec2_user_file.py region subnetid
+run python ec2_user_file.py region subnetid securitygroup
 
-and also need to add security group
-Presently see some issue with root 
+
+Presently see some issue with root that is the reasom used amazon1 where bydefault we get ext4
 
 
 
