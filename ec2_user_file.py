@@ -116,13 +116,15 @@ ssh_keyname=users[0]["ssh_key"]
 output=user_keypair_creation(user,ssh_keyname)
 
 ssh_add +="""
-mkdir -p  /home/%s/.ssh/
 useradd %s
+mkdir -p /home/%s/.ssh/
+chown %s:%s /home/%s/.ssh
+chmod 700 /home/%s/.ssh
 echo "%s ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/90-cloud-init-users
 cat <<EOD >> /home/%s/.ssh/authorized_keys
 %s
 EOD
-"""%(user,user,user,user,output)
+"""%(user,user,user,user,user,user,user,user,output)
 
 user=users[1]["login"]
 ssh_keyname=users[1]["ssh_key"]
