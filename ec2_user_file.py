@@ -17,7 +17,7 @@ from dateutil import parser
 region = sys.argv[1]
 SubnetId_yours=sys.argv[2]
 
-security_group="sg-xxxxxxxxx"
+security_group=sys.argv[3]
 
 def sprint(message):
     print ("{0} {1}".format(datetime.now().strftime('%Y-%m-%d %H:%M:%S'),str(message))) 
