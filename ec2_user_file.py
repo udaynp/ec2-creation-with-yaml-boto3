@@ -22,6 +22,7 @@ security_group="sg-xxxxxxxxx"
 def sprint(message):
     print ("{0} {1}".format(datetime.now().strftime('%Y-%m-%d %H:%M:%S'),str(message))) 
 
+# to run any shell commands
 def shell_command(query,IsShell=None):
       logging.info ("< ------ Running Command   ------ >" )
       logging.info (query)
@@ -34,7 +35,7 @@ def shell_command(query,IsShell=None):
 #status, output, error = shell_command(s3_to_s3_copy, True)
 ssh_add=""
 
-
+#Create user and pem key and extract the public key
 def user_keypair_creation(user,ssh_keyname):
 
         build_string=""
@@ -67,7 +68,7 @@ def user_keypair_creation(user,ssh_keyname):
             print(output)
         return output    
 
-
+#get the values from yaml
 try:
     with open(r'config_a.yaml') as configfile:
           configfile = yaml.safe_load(configfile)
@@ -159,7 +160,7 @@ print(myCode)
 
 
 
-
+#get newest image
 def newest_image(list_of_images):
     latest = None
 
